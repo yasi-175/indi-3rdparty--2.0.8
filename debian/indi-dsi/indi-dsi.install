@@ -1,0 +1,4 @@
+usr/bin/
+usr/share/indi/
+lib/firmware
+lib/udev/rules.d

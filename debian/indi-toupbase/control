@@ -1,0 +1,42 @@
+Source: indi-toupbase
+Section: science
+Priority: extra
+Maintainer: Jasem Mutlaq <mutlaqja@ikarustech.com>
+Build-Depends: debhelper (>= 9),
+               cdbs,
+               cmake,
+               pkg-config,
+               libcfitsio-dev,
+               libindi-dev,
+               zlib1g-dev,
+               libnova-dev,
+               libtoupcam,
+               libaltaircam,
+               libbressercam,
+               libogmacam,
+               libtscam,
+               libstarshootg,
+               libnncam,
+               libmallincam,
+               libomegonprocam,
+               libmeadecam
+Standards-Version: 3.9.4
+
+Package: indi-toupbase
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libtoupcam, libaltaircam, libbressercam, libogmacam, libtscam, libstarshootg, libnncam, libmallincam, libomegonprocam, libmeadecam
+Description: INDI Driver for Touptek based cameras
+ Driver for Touptek based cameras.
+ .
+ This driver is compatible with any INDI client such as KStars or Xephem.
+
+Package: indi-toupbase-dbg
+Priority: extra
+Section: debug
+Architecture: any
+Depends: indi-toupbase (= ${binary:Version}), ${misc:Depends}
+Description: INDI Driver for Touptek based cameras
+ Driver for Touptek based cameras.
+ .
+ This driver is compatible with any INDI client such as KStars or Xephem.
+ This package contains the debug symbols for the this driver, useful to investigate problems in INDI.

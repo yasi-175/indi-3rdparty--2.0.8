@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Weather Radio</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv=“Pragma” content=”no-cache”>
+    <meta http-equiv=“Expires” content=”-1″>
+    <meta http-equiv=“CACHE-CONTROL” content=”NO-CACHE”>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/styles.css" /> 
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/apexcharts.min.js"></script>
+  </head>
+  <body onload="initCharts();loadImages(48);">
+    <div class="navigation">
+        Home | <a href="./sensordata.html">Sensors</a> | <a href="./webcam.html">Webcam</a> | <a href="./forecast.html">Forecast</a>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12" align="center">
+	  <div style="font-weight: bold; font-size: xx-large; padding-top: 30px; padding-bottom: 0px; margin-bottom: 0px">
+	    Weather Radio
+	  </div>
+	  <div style="font-size: x-small; padding: 0px;">Last update: <span id="lastupdate">--</span></div>
+        </div>
+      </div> <!-- Last update row end -->
+      <div class="row">
+        <div class="col-md-12" align="center">
+          <div class="toolbar">
+            <button id="timeline_6h">6h</button>
+            <button id="timeline_1d">1d</button>
+            <button id="timeline_7d">7d</button>
+            <button id="timeline_30d">30d</button>
+          </div>
+        </div>
+      </div> <!-- button row end -->
+      <div class="row">
+        <div class="col-lg-4 shadow" align="center">
+	  <div class="row">
+	    <div class="col-sm-12" align="center">
+	      <a href="#" onclick="openLightbox(0)"id="current_weather_link"><img src="media/current_weather.jpg" height="250px" id="current_weather"></a>
+	    </div>
+	  </div>
+	  <div class="row">
+	    <!-- filled by updateImageBar -->
+	    <div class="col-sm-12" align="center" id="image_bar"></div>
+	  </div>
+	</div>
+        <div class="col-lg-4 shadow" id="temperature_series"></div>
+        <div class="col-lg-4 shadow" id="pressure_series"></div>
+      </div> <!-- first time series row end -->
+      <div class="row">
+        <div class="col-lg-4 shadow" id="windSpeed_series"></div>
+        <div class="col-lg-4 shadow" id="sqm_series"></div>
+        <div class="col-lg-4 shadow" id="clouds_series"></div>
+      </div> <!-- second time series row end -->
+      <div class="row">
+        <div class="col-lg-4 shadow" id="humidity_series"></div>
+        <div class="col-lg-4 shadow" id="rain_volume_series"></div>
+        <div class="col-lg-4 shadow" id="rain_intensity_series"></div>
+      </div> <!-- third time series row end -->
+    </div>
+<!-- The Lightbox modal -->
+    <div id="lightbox" class="modal">
+      <span class="close cursor" onclick="closeLightbox()">&times;</span>
+      <!-- filled by openLightbox() -->
+      <div id="lightbox-content" class="modal-content">
+	<!-- carousel -->
+	<div id="timeseries" class="carousel slide" data-ride="carousel">
+	  <!-- Indicators -->
+	  <ul class="carousel-indicators" id="timeseries-indicators">
+	    <!-- filled by updateCarousel() -->
+	  </ul>
+
+	  <div class="carousel-inner" id="timeseries-carousel">
+	    <!-- filled by updateCarousel() -->
+	  </div>
+	  <a class="carousel-control-prev" href="#timeseries" data-slide="prev">
+	    <span class="carousel-control-prev-icon"></span>
+	  </a>
+	  <a class="carousel-control-next" href="#timeseries" data-slide="next">
+	    <span class="carousel-control-next-icon"></span>
+	  </a>
+	</div> <!-- carousel end -->
+      </div> <!-- lightbox-content end -->
+    </div> <!-- lightbox end -->
+    <script src="js/charts.js"></script>
+    <script src="js/images.js"></script>
+  </body>
+</html>

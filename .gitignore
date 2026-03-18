@@ -1,41 +1,119 @@
-# Prerequisites
-*.d
+CMakeLists.txt.user*
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Ignore build directory
+build/
+build-*/
 
-# Precompiled Headers
-*.gch
-*.pch
+# VSCode
+.vscode/
 
-# Linker files
-*.ilk
+# Gedit backup files
+*~
 
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
+.cmake
+nbproject/
+.directory
+CMakeCache.txt
+*_automoc.cpp
+*autogen/
+unitybuild_*.c*
 *.a
-*.lib
+*.so.*
+*.so
+Makefile
+moc_*.cpp
+CMakeFiles
+cmake_install.cmake
+CTestTestfile.cmake
+Testing
+doxygen_warnings.txt
+documentation
+*.cbp
+install_manifest.txt
+.idea
+*.kdev4
 
-# Executables
-*.exe
-*.out
-*.app
-
-# debug information files
-*.dwo
+CPackConfig.cmake
+CPackSourceConfig.cmake
+fxload-libusb/fxload-libusb
+indi-aagcloudwatcher/aagcloudwatcher_test
+indi-aagcloudwatcher/config.h
+indi-aagcloudwatcher/indi_aagcloudwatcher
+indi-aagcloudwatcher/indi_aagcloudwatcher.xml
+indi-apogee/config.h
+indi-apogee/indi_apogee.xml
+indi-apogee/indi_apogee_ccd
+indi-asi/config.h
+indi-asi/indi_asi.xml
+indi-asi/indi_asi_ccd
+indi-asi/indi_asi_wheel
+indi-dsi/config.h
+indi-dsi/indi_dsi.xml
+indi-dsi/indi_dsi_ccd
+indi-duino/ask_analog_pin
+indi-duino/ask_digital_pin
+indi-duino/blink_pin
+indi-duino/config.h
+indi-duino/indi_duino
+indi-duino/indi_duino.xml
+indi-duino/read_analog_pin
+indi-duino/read_digital_pin
+indi-duino/read_string
+indi-eqmod/config.h
+indi-eqmod/indi_eqmod.xml
+indi-eqmod/indi_eqmod_telescope
+indi-fishcamp/config.h
+indi-fishcamp/indi_fishcamp.xml
+indi-fishcamp/indi_fishcamp_ccd
+indi-fli/config.h
+indi-fli/indi_fli.xml
+indi-fli/indi_fli_ccd
+indi-fli/indi_fli_focus
+indi-fli/indi_fli_wheel
+indi-gphoto/config.h
+indi-gphoto/indi_gphoto.xml
+indi-gphoto/indi_gphoto_ccd
+indi-gphoto/make_gphoto_symlink.cmake
+indi-gpsd/config.h
+indi-gpsd/indi_gpsd
+indi-gpsd/indi_gpsd.xml
+indi-gpsnmea/config.h
+indi-gpsnmea/indi_gpsnmea
+indi-gpsnmea/indi_gpsnmea.xml
+indi-inovaplx/config.h
+indi-inovaplx/indi_inovaplx_ccd.xml
+indi-maxdomeii/config.h
+indi-maxdomeii/indi_maxdomeii
+indi-maxdomeii/indi_maxdomeii.xml
+indi-mgen/config.h
+indi-mgen/indi_mgenautoguider
+indi-nexdome/config.h
+indi-nexdome/indi_nexdome
+indi-nexdome/indi_nexdome.xml
+indi-nexstarevo/config.h
+indi-nexstarevo/indi_nexstarevo.xml
+indi-nexstarevo/indi_nexstarevo_telescope
+indi-qhy/config.h
+indi-qhy/indi_qhy.xml
+indi-qhy/indi_qhy_ccd
+indi-qhy/qhy_ccd_test
+indi-qsi/config.h
+indi-qsi/indi_qsi.xml
+indi-qsi/indi_qsi_ccd
+indi-radiosim/config.h
+indi-radiosim/indi_radiosim.xml
+indi-radiosim/indi_radiosim_detector
+indi-rtlsdr/config.h
+indi-rtlsdr/indi_rtlsdr.xml
+indi-rtlsdr/indi_rtlsdr_detector
+indi-sbig/config.h
+indi-sbig/indi_sbig_ccd
+indi-spectracyber/config.h
+indi-spectracyber/indi_spectracyber
+indi-spectracyber/indi_spectracyber.xml
+indi-sx/indi_sx.xml
+indi-sx/indi_sx_ao
+indi-sx/indi_sx_ccd
+indi-sx/indi_sx_wheel
+indi-sx/sx_ccd_test
+libinovasdk/make_inovasdk_symlink.cmake

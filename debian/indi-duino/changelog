@@ -1,0 +1,221 @@
+indi-duino (1.17) buster; urgency=medium
+
+  * New firmware for an Arduino based power box
+  * New INDI service "Arduino Power Box"
+  * Image bar and image carousel shifted to front page
+  * Bug fix to skip gaps in timelapse frames when creating videos
+  * Bug fix for updating RRD file with empty list
+  * Bug fix loading configuration already during handshake
+
+ -- Wolfgang Reissenberger <wolfgang@debian10.localdomain>  Tue, 07 Jun 2022 20:45:12 +0200
+
+indi-duino (1.16) buster; urgency=medium
+
+  * Bug fix causing crashes of rain sensors
+  * Install documentation updated for required Arduino packages
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Thu, 16 Sep 2021 13:10:45 +0200
+
+indi-duino (1.15) buster; urgency=medium
+
+  * WiFi connection checks and recovery of connection losses added
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Mon, 24 May 2021 18:06:25 +0200
+
+indi-duino (1.14) buster; urgency=medium
+
+  * Configuration based on an ini file replacing wr_config.py
+  * JSON protocol changed so that each JSON response contains the response
+    type.
+  * RRD update now forces a weather parameter refresh of the INDI service
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Fri, 21 May 2021 08:41:41 +0200
+
+indi-duino (1.13) buster; urgency=medium
+
+  * Rain sensor integrated
+  * Better handling of long exposure times for timelapse
+  * Improvements for auto exposure during dawn/dusk
+  * Pan tilt controller support added
+  * Redesign of the HTML page
+  * Firmware optimization and bug fixes
+  * Bug fixes for the INDI weather radio service
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Tue, 11 May 2021 17:44:25 +0200
+
+indi-duino (1.12) buster; urgency=medium
+
+  * rain volume and rain drops counting features added to INDI service
+  * robustness of wr_rrd_update.py improved using PID file to avoid
+    multiple concurrent occurences
+  * several bug fixes
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Sat, 06 Feb 2021 14:05:14 +0100
+
+indi-duino (1.11) buster; urgency=medium
+
+  * Multiple rain sensors may be used in parallel
+  * Rain sensors and wetness service integrated into INDI service
+  * Auto exposure for time lapse optimized
+  * Time lapse service created making faster image frequencies of 30-45 sec possible
+  * Image conversion service added to convert full scale images into appropriate
+    sizes for time lapse
+  * Bug fixes
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Sun, 31 Jan 2021 21:01:14 +0100
+
+indi-duino (1.10) buster; urgency=medium
+
+  * Bucket tipping rain sensor support added
+  * Resistor based water sensor support added
+  * Button handling reworked based upon OneButton
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Sun, 03 Jan 2021 19:56:09 +0100
+
+indi-duino (1.9.1) buster; urgency=medium
+
+  * Bug fix ensuring that OTA is started after WiFi connection is established
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Fri, 01 Jan 2021 19:49:43 +0100
+
+indi-duino (1.9) buster; urgency=medium
+
+  * Over the air updating option added
+  * I2C speed made configurable since MLX90614 seems to have problems with 400kHz speed
+  * WiFi handling reworked asynchronously speeding up startup
+  * Several bug fixes and documentation updates
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Thu, 31 Dec 2020 21:44:28 +0100
+
+indi-duino (1.8) buster; urgency=medium
+
+  * Added support for a OLED display
+  * Button for turning display on added
+  * display string handling reworked to fix memory leak
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Fri, 18 Dec 2020 21:22:38 +0100
+
+indi-duino (1.7) buster; urgency=medium
+
+  * Script support for WiFi connection to the Arduino 
+  * Support for multiple weather devices added
+  * Setting of geo location added
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Sun, 30 Aug 2020 21:36:04 +0200
+
+indi-duino (1.6) buster; urgency=medium
+
+  * Web cam view reworked with time series light bar and modal view for details
+  * Luminosity data added to sensors view
+  * Bug fix: timeout for RRD update script extended to 7 seconds
+  * Bug fix: Remove child nodes in Javascript corrected
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Sat, 08 Aug 2020 17:11:42 +0200
+
+indi-duino (1.5) buster; urgency=medium
+
+  * Caching of sensor data instead of Json strings
+  * Delay added during initial handshake waiting for serial connection to settle
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Sat, 11 Jul 2020 22:53:01 +0200
+
+indi-duino (1.4) buster; urgency=medium
+
+  * Caching and time measurement for sensor reading introduced
+  * Davis Anemometer interrupt reading speedup avoiding deadlocks
+  * Minor bug fixes
+  * Python based time lapse function for Raspberry Camera added
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Sat, 04 Jul 2020 23:29:49 +0200
+
+indi-duino (1.3) buster; urgency=medium
+
+  * WiFi connection option added to the Weather Radio INDI driver
+  * Weather camera images and timelapse integrated into the Weather
+    Radio web page
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Tue, 19 May 2020 23:31:41 +0200
+
+indi-duino (1.2) buster; urgency=medium
+
+  * Changing WiFi credentials added
+  * Refreshing firmware info
+  * Memory information added to configuration info
+  * Connect / disconnect to WiFi
+  * Reset function added for ESP8266
+
+ -- Wolfgang Reissenberger <sterne-jaeger@openfuture.de>  Tue, 07 Apr 2020 21:59:35 +0200
+
+indi-duino (1.1) buster; urgency=medium
+
+  * Protocol with firmware changed for full line commands
+  * Display of firmware configuration added to INDI client
+  * Script for data retrieval simplyfied reading weather and sensor data
+    in same INDI session
+
+ -- Wolfgang Reissenberger <sterne-jaeger@t-online.de>  Sun, 29 Mar 2020 14:28:56 +0200
+
+indi-duino (1.0) buster; urgency=medium
+
+  * Calibration of weather parameters added
+  * Robustness of RRD scripts added
+
+ -- Wolfgang Reissenberger <sterne-jaeger@t-online.de>  Sat, 21 Mar 2020 22:01:10 +0100
+
+indi-duino (0.9) buster; urgency=medium
+
+  * TSL237 sampling interval changed to 2sec
+  * Bug fixes to improve script robustness
+
+ -- Wolfgang Reissenberger <sterne-jaeger@t-online.de>  Wed, 18 Mar 2020 21:59:04 +0100
+
+indi-duino (0.8) buster; urgency=medium
+
+  * Weather Radio documentation added
+
+ -- Wolfgang Reissenberger <sterne-jaeger@t-online.de>  Fri, 13 Mar 2020 22:59:55 +0100
+
+indi-duino (0.7) buster; urgency=medium
+
+  * Added web server that displays all JSON documents (for ESP8266 boards)
+  * Support for TSL237 added
+  * INDI driver reacts dynamically to connected sensors
+  * bug fixes
+
+ -- Wolfgang Reissenberger <sterne-jaeger@t-online.de>  Mon, 09 Mar 2020 22:42:51 +0100
+
+indi-duino (0.6) buster; urgency=medium
+
+  * Support for Davis Anemometer added to weather radio
+
+ -- Wolfgang Reissenberger <sterne-jaeger@t-online.de>  Mon, 02 Mar 2020 08:16:43 +0100
+
+indi-duino (0.6) buster; urgency=medium
+
+  * DHT bug fix + config optimization
+
+ -- Wolfgang Reissenberger <sterne-jaeger@t-online.de>  Sat, 11 Jan 2020 13:33:39 +0100
+
+indi-duino (0.5) stretch; urgency=medium
+
+  * Code cleanup
+
+ -- Wolfgang Reissenberger <sterne-jaeger@t-online.de>  Sun, 15 Dec 2019 18:24:59 +0100
+
+indi-duino (0.3) bionic; urgency=medium
+
+  * New release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 22 Jan 2018 08:45:00 +0300
+
+indi-duino (0.2) xenial; urgency=medium
+
+  * New release.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Tue, 31 May 2016 13:11:19 +0300
+
+indi-duino (0.1) vivid; urgency=medium
+
+  * New release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 07 Jun 2015 11:25:14 +0300

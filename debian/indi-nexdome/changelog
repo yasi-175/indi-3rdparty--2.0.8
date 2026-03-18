@@ -1,0 +1,23 @@
+indi-nexdome (1.5) bionic; urgency=medium
+
+  * Fix shutter handling.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Wed, 12 Aug 2020 20:00:00 +0300
+
+indi-nexdome (1.4) bionic; urgency=medium
+
+  * New release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Thu, 04 Oct 2019 13:00:00 +0300
+
+indi-nexdome (1.1) bionic; urgency=medium
+
+  * New release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 22 Jan 2018 08:45:00 +0300
+
+indi-nexdome (1.0.0ubuntu1) xenial; urgency=low
+
+  * Initial release
+
+ -- Gerry Rozema <gerryr@rozeware.com>  Tue, 12 Sep 2017 16:01:27 -0700

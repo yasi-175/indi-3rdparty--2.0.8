@@ -1,0 +1,68 @@
+indi-toupbase (2.1) jammy; urgency=low
+
+  * Updated driver.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sat, 13 May 2023 09:00:00 +0300
+
+indi-toupbase (2.0) jammy; urgency=low
+
+  * Updated driver.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Fri, 7 Apr 2023 09:00:00 +0300
+
+indi-toupbase (1.0) focal; urgency=low
+
+  * Define capture formats on initial connection.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 6 Nov 2022 09:00:00 +0300
+
+indi-toupbase (0.9) focal; urgency=low
+
+  * Added Omegon SDK based version of toupcam driver.
+
+ -- Kevin Krüger <kkevin@gmx.net>  Thu, 27 May 2022 10:00:00 +0200
+
+indi-toupbase (0.8) focal; urgency=low
+
+  * Added binningm mode.
+  * Fixed timeout after changing exposure duration.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Thu, 9 Sep 2021 09:00:00 +0300
+
+indi-toupbase (0.7) bionic; urgency=low
+
+  * Add OEM camera support like Meade.
+  * Make timeout factor configurable.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Thu, 9 Sep 2021 09:00:00 +0300
+
+indi-toupbase (0.6) bionic; urgency=low
+
+  * Fixed snap issue.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sat, 14 Feb 2021 09:00:00 +0300
+
+indi-toupbase (0.5) bionic; urgency=low
+
+  * Added support to Low Noise Mode.
+  * Added support to heating up.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Mon, 15 Feb 2021 09:00:00 +0300
+
+indi-toupbase (0.4) bionic; urgency=low
+
+  * Added support to High Conversion Gain
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Fri, 29 May 2020 09:00:00 +0300
+
+indi-toupbase (0.3) bionic; urgency=low
+
+  * Added support to Mallincam
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Thu, 21 May 2020 09:00:00 +0300
+
+indi-toupbase (0.2) bionic; urgency=low
+
+  * Initial Release.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Mon, 12 Aug 2019 09:00:00 +0300

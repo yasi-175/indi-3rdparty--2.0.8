@@ -1,0 +1,59 @@
+libtoupcam (55.25633.20240519) jammy; urgency=medium
+
+  * Upstream release
+
+ -- touptek; Mon, 20 May 2024 08:37:24 +0800
+
+libtoupcam (55.24621.20240204) jammy; urgency=medium
+
+  * Upstream release
+
+ -- touptek; Mon, 05 Feb 2024 08:23:42 +0800
+
+libtoupcam (1.54.2) jammy; urgency=medium
+
+  * Upstream release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Fri, 25 Aug 2023 15:00:00 +0300
+
+libtoupcam (1.53.2) jammy; urgency=medium
+
+  * Upstream release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Fri, 23 Dec 2022 15:00:00 +0300
+
+libtoupcam (1.50.1) bionic; urgency=medium
+
+  * Upstream release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sat, 8 Jan 2022 15:00:00 +0300
+
+libtoupcam (1.49.1) bionic; urgency=medium
+
+  * Upstream release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Tue, 15 June 2021 15:00:00 +0300
+
+libtoupcam (1.48.0) bionic; urgency=medium
+
+  * Upstream release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sat, 28 Mar 2020 15:00:00 +0300
+
+libtoupcam (1.46.0) bionic; urgency=medium
+
+  * Upstream release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sat, 14 Mar 2020 15:00:00 +0300
+
+libtoupcam (1.39.0) bionic; urgency=medium
+
+  * Upstream release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Thu, 1 Aug 2019 15:00:00 +0300
+
+libtoupcam (1.0.0) bionic; urgency=medium
+
+  * Initial release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 11 Nov 2018 18:00:00 +0300

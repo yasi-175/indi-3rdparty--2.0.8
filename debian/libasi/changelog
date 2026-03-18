@@ -1,0 +1,373 @@
+libasi (1.35) jammy; urgency=medium
+
+  * ASI Camera SDK 1.35 release. Change log:
+
+    New Features
+    1. None.
+
+    Bug fix
+    1. Fixed some issues of ASI676.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Thu, 23 May 2024 21:06:06 +0300
+
+libasi (1.34) jammy; urgency=medium
+
+  * ASI Camera SDK 1.34 release. Change log:
+
+    New Features
+    1. USBHub control for some cooling cameras.
+
+    Bug fix
+    1. Fixed some issues.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Fri, 29 Mar 2024 18:57:40 +0200
+
+libasi (1.33) jammy; urgency=medium
+
+  * ASI Camera SDK 1.33 release. Change log:
+
+    Bug fix
+    1. Fixed the issue where some camera's fans do not rotate when they are cooling.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Tue, 26 Dec 2023 03:27:56 +0200
+
+libasi (1.32) jammy; urgency=medium
+
+  * ASI Camera SDK 1.32 release. Change log for this and couple of
+    previous versions.
+
+    1.32:
+    New Features
+      1. Can remember the last state of cooling camera's fan speed and LED
+         state.
+    Optimization
+      1. ASI2600 linearity of image brightness in long exposure state.
+      2. ASI120 Mini no longer supports overclocking feature.
+      3. Maximum number of supported camera models changed to 256
+    Bug fix
+      1. In rare cases, two different ASI cameras are recognized as the same
+         camera.
+      2. ASI2600 has no image in high speed mode.
+      3. GPS time of GPS cameras is inaccurate in individual cases.
+      4. ASI664/ASI715 has no image under certain exposure times in hardware
+         Bin2 state.
+      5. ASI2600 drops frames in high speed mode when transmitting data via
+         USB2.0.
+
+    1.31:
+    New Features
+      1. Add ASI664MC,ASI715MC.
+      2. Add fan speed control and LED light control for cooler cameras.
+      3. For customized cameras, GPS functionality has been added.
+    Bug fix
+      1. fixed the bug of ASI220Mini's brightness on high gain.
+
+    1.30:
+    Bug fix
+      1. Fix low frame rate problem in ASI462MM high-speed mode.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Fri, 01 Dec 2023 22:00:46 +0200
+
+libasi (1.31) jammy; urgency=medium
+
+  * ASI Camera SDK 1.31 release. No change log posted.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Sat, 28 Oct 2023 15:02:26 +0300
+
+libasi (1.30) jammy; urgency=medium
+
+  * ASI Camera SDK 1.30 release. No change log posted.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Wed, 20 Sep 2023 22:22:30 +0300
+
+libasi (1.29) jammy; urgency=medium
+
+  * ASI Camera SDK 1.29 release. No change log posted.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Wed, 03 May 2023 22:48:55 +0300
+
+libasi (1.28) jammy; urgency=medium
+
+  * ASI Camera SDK 1.28 release. Changelog:
+    V1.28 2023.1.12
+    (1) Add ASI990-MM Pro,ASI462MM
+    (2) Some optimizations have been made
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Tue, 07 Feb 2023 22:46:29 +0200
+
+libasi (1.27) jammy; urgency=medium
+
+  * ASI Camera SDK 1.27 release. Changelog:
+    V1.27 2022.11.28
+    (1) Add ASI220 Mini ASI461MM
+    (2) Some optimizations have been made    
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Wed, 30 Nov 2022 18:00:00 +0300
+
+libasi (1.26) jammy; urgency=medium
+
+  * ASI Camera SDK 1.26 release. Changelog:
+    V1.26 2022.8.4
+    (1) Fixed the bug of ASI432
+    (2) Optimized the middle gain of 432;411;461;585;662;678;2600;6200
+    (3) Fixed the crash problem on ARMV8
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Fri, 05 Aug 2022 14:18:30 +0300
+
+libasi (1.24) buster; urgency=medium
+
+  * ASI Camera SDK 1.25 release. Changelog including updated entry for
+    1.24:
+
+    V1.25 2022.7.20
+    Optimize the performance of ASI432
+
+    V1.24 2022.6.23
+    (1) Add ASI585,ASI432,ASI662,ASI678
+    (2) The camera name from ASIGetCameraProperty no longer contains
+    alias. If the application software needs to display alias, it needs to
+    obtain them through the ASIGetID method.
+    (3) Some optimizations have been made
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Mon, 25 Jul 2022 23:55:58 +0300
+
+libasi (1.23) buster; urgency=medium
+
+  * ASI Camera SDK 1.24 release. Changelog including older entries:
+    V1.24 2022.6.23
+    (1) Add new cameras
+    (2) The camera name from ASIGetCameraProperty no longer contains alias.
+    If the application software needs to display alias, it needs to obtain
+    them through the ASIGetID method.
+    (3) Some optimizations have been made
+
+    V1.23 2022.5.13
+    (1) Fixed some bugs
+
+    V1.22 2022.3.10
+    (1) Add: The interface ASICameraCheck is added to replace 
+    ASIGetProductIDs, which will be discarded soon
+    (2) Fixed bug: 294MM cann't load image  in some cases
+    (3) Fixed bug: 294MM get bad images in 1s exposure under USB2.0
+    (4) Optimized: Maximum frame rate of 174
+    (5) More bug fixes and optimizations
+
+    V1.21 2022.1.17
+    (1) Add new cameras
+    (2) Some optimizations have been made
+
+    V1.20.3 2021.11.16
+    (1) Fix bug: When two cameras are turned on at the same time, turn off
+    one camera and the other camera may crash.
+    (2) Fix bug: At the snap mode of 120S cameras, when change BIN1 to
+    BIN2, there may be no image upload.
+    (3) Other bug fixes and feature optimization.
+
+    V1.20.2 2021.10.21
+    Some optimizations have been made
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Sun, 03 Jul 2022 21:56:46 +0300
+
+libasi (1.22) buster; urgency=medium
+
+  * ASI Camera SDK 1.20.2 release. No changelog entry from ZWO.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Fri, 22 Oct 2021 20:24:07 +0300
+
+libasi (1.21) buster; urgency=medium
+
+  * ASI Camera SDK 1.20.1 release. Changelog:
+    V1.20.1 2021.9.28
+    Fix bugs of ASI485MC
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Thu, 30 Sep 2021 00:56:06 +0300
+
+libasi (1.20) buster; urgency=medium
+
+  * ASI Camera SDK 1.20 release. Changelog:
+    V1.20 2021.9.6
+    Add new cameras ASI482MC,ASI485MC
+    Fix some bugs
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Sun, 12 Sep 2021 20:56:19 +0300
+
+libasi (1.19) buster; urgency=medium
+
+  * ASI Camera SDK 1.19.1 release. Changelog again:
+    V1.19.1 2021.6.28
+    Fix some bugs
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Wed, 30 Jun 2021 22:55:54 +0300
+
+libasi (1.18) buster; urgency=medium
+
+  * ASI Camera SDK 1.19 release. Changelog familiar:
+    V1.19 2021.6.23
+    Fix some bugs
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Thu, 24 Jun 2021 18:19:49 +0300
+
+libasi (1.17) buster; urgency=medium
+
+  * Updates to ZWO SDKs:
+    ASI Camera SDK 1.18
+    EAF SDK 1.4
+    EFW SDK 1.7
+
+    Unfortunately changelogs are just "Fix some bugs"
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Mon, 17 May 2021 00:15:19 +0300
+
+libasi (1.16) buster; urgency=medium
+
+  * Correcting version.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Wed, 28 Apr 2021 01:00:00 +0300
+
+libasi (1.15) buster; urgency=medium
+
+  * Reverted ASI camera SDK to 1.16 due to reported bugs.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Thu, 15 Apr 2021 20:56:18 +0300
+
+libasi (1.14) buster; urgency=medium
+
+  * ASI Camera SDK 1.17 release. Changelog from ZWO:
+    V1.17
+    Fix some bugs.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Wed, 31 Mar 2021 20:56:18 +0300
+
+libasi (1.13) buster; urgency=medium
+
+  * Updates to ZWO EAF and EFW SDKs. Changelogs from ZWO:
+    EAF SDK version 1.3:
+    V 1.3 2020.3.4
+    Optimize Code
+
+    EFW SDK version 1.6:
+    V 1.6 2020.3.4
+    Optimize Code
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Fri, 19 Mar 2021 19:32:04 +0200
+
+libasi (1.12) buster; urgency=medium
+
+  * ASICAM 1.16.3 release:
+    V1.16.3
+    Fix bug: ASI294MM Pro BIN2/BIN4 ROI problem.
+  
+    V1.16.2
+    Fix some bugs.
+  
+    V 1.16.1
+    Fix some bugs.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Mon, 04 Jan 2021 18:28:27 +0200
+
+libasi (1.11) buster; urgency=medium
+
+  * ASICAM 1.16 release:
+    V 1.16
+    ASI294MM camera support 44M resolution.
+    Fixed some bugs.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Mon, 23 Nov 2020 18:56:21 +0200
+
+libasi (1.10) buster; urgency=medium
+
+  * ASICAM 1.15.0915 release:
+    V 1.15.0915
+    Fix some bugs
+
+    V 1.15.0819
+    Add new cameras
+    Fix some bugs
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Thu, 24 Sep 2020 21:44:20 +0300
+
+libasi (1.9) buster; urgency=medium
+
+  * ASICAM 1.15.0617 release:
+    V 1.15.0617 2020.6.17
+    Fix some bugs
+    Add new camera ASI462MC
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Tue, 11 Aug 2020 01:21:00 +0300
+
+libasi (1.8) buster; urgency=medium
+
+  * ZWO EAF 0.2.0605 release:
+    V 0.2.0605 2020.6.5
+    Save reverse in software
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Mon, 20 Jul 2020 23:26:28 +0300
+
+libasi (1.7) buster; urgency=medium
+
+  * ZWO EFW 1.5.0616 release:
+    V1.5.0615 2020.6.15
+    Fix some bugs
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Mon, 22 Jun 2020 21:27:41 +0300
+
+libasi (1.6) buster; urgency=medium
+
+  * ASICAM 1.15.0430 release:
+    V1, 15, 0430 2020.5.20
+
+ -- Wouter van Reeven <wouter@van.reeven.nl>  Mon, 25 May 2020 14:40:38 -0400
+
+libasi (1.5) buster; urgency=medium
+
+  * ZWO EAF SDK 0.2.0218 release:
+    V0, 2, 0218  2020.2.18
+    fix some bugs
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Mon, 27 Apr 2020 01:09:38 +0300
+
+libasi (1.4) buster; urgency=medium
+
+  * ASICAM 1.14.1227 release:
+    V1, 14, 1227 2019.12.27
+    Fix some bug
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Mon, 2 Mar 2020 16:38:36 +0200
+
+libasi (1.3) buster; urgency=medium
+
+  * ZWO EFW 0.4.1022 release:
+    V0.4.1022-> 2018.10.22
+    Fix some bugs
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Sun, 12 Jan 2020 22:34:21 +0200
+
+libasi (1.2) buster; urgency=medium
+
+  * ASICAM 1.14.1119 release:
+    V1, 14, 1119 2019.11.19
+    Add new cameras
+    Fix some bug
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Mon, 16 Dec 2019 10:30:33 +0200
+
+libasi (1.1) buster; urgency=medium
+
+  * ASICAM 1.14.1108 release:
+    V1, 14, 1108 2019.11.8
+    Multi-position for the anti-dew
+    Add new cameras
+    Fix some bug
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Tue, 19 Nov 2019 11:06:00 +0200
+
+libasi (1.0) buster; urgency=medium
+
+  * Initial release
+  * ASICAM 1.14.0715
+  * ASIEFW 0.3.1205
+  * ASIST4 1.0
+  * ASIEAF 0.1.0524
+
+ -- Radek Kaczorek <rkaczorek@gmail.com>  Sat, 2 Nov 2019 13:06:00 +0100
+

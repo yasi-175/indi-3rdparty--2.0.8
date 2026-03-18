@@ -1,0 +1,138 @@
+indi-asi (2.4) jammy; urgency=medium
+
+  * Fixed issue with multiple EAFs not detected properly.
+  * Fixed ASI Camera nicknames causing camera to not load properly.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Wed, 17 Jan 2023 15:00:00 +0300
+
+indi-asi (2.3) jammy; urgency=medium
+
+  * Added support to EAF extended step range in firmware version 3.3.7.
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Tue, 28 Mar 2023 21:56:27 +0300
+
+indi-asi (2.2) bionic; urgency=medium
+
+  * Added temperature compensation on focuser.
+
+ -- Blaise-Florentin Collin <thx8411@yahoo.fr>  Wed, 13 Apr 2022 03:00:00 +0300
+
+indi-asi (2.0) bionic; urgency=medium
+
+  * Added single camera driver.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Wed, 25 Aug 2021 03:00:00 +0300
+
+indi-asi (1.9) bionic; urgency=medium
+
+  * Added EFW Unidirection settings.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Wed, 9 Sep 2020 03:00:00 +0300
+
+indi-asi (1.8) bionic; urgency=low
+
+  * Fix configuration save issue.
+
+ -- Konstantin Baranov <const@mimas.ru>  Fri, 14 Aug 2020 11:00:00 -0700
+
+indi-asi (1.7) bionic; urgency=medium
+
+  * Fix configuration save issue.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Mon, 11 May 2020 09:00:00 +0300
+
+indi-asi (1.6) bionic; urgency=medium
+
+  * Add OFFSET keyword.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 26 Jan 2020 09:00:00 +0300
+
+indi-asi (1.5) bionic; urgency=medium
+
+  * Making 16bit as default when available.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Mon, 11 Nov 2019 09:00:00 +0300
+
+indi-asi (1.4) bionic; urgency=medium
+
+  * Separating ASI driver from libraries
+
+ -- Radek Kaczorek <rkaczorek@gmail.com>  Sat, 2 Nov 2019 14:39:00 +0100
+
+indi-asi (1.3) bionic; urgency=low
+
+  * Adjust maximum resolution to account for the ZWO capture size limitation rules.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Mon, 22 Apr 2019 23:00:00 +0300
+
+indi-asi (1.2) bionic; urgency=low
+
+  * Do not define bayer keyword for mono cameras.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sat, 30 Mar 2019 10:00:00 +0300
+
+indi-asi (1.1) bionic; urgency=low
+
+  * Minor bug fix.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Fri, 1 Mar 2019 01:00:00 +0300
+
+indi-asi (1.0) bionic; urgency=low
+
+  * Added ZWO EAF support.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Tue, 23 Jan 2019 23:00:00 +0300
+
+indi-asi (0.9) bionic; urgency=low
+
+  * Added ZWO USB2ST4 support.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Tue, 24 Jul 2018 09:00:00 +0300
+
+indi-asi (0.8) bionic; urgency=low
+
+  * Updated SDK.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Fri, 9 Feb 2018 20:00:00 +0300
+
+indi-asi (0.7) bionic; urgency=low
+
+  * Updated SDK.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Tue, 21 Nov 2017 23:00:00 +0300
+
+indi-asi (0.6) xenial; urgency=low
+
+  * Updated SDK.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 10 Oct 2017 22:00:00 +0300
+
+indi-asi (0.5) vivid; urgency=low
+
+  * Updated SDK. Name changed to indi-asi
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 12 Jun 2016 13:00:00 +0300
+
+indi-asicam (0.4) vivid; urgency=low
+
+  * Fix west/east guide issues.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Tue, 22 Sep 2015 20:00:00 +0300
+
+indi-asicam (0.3) vivid; urgency=low
+
+  * Updated SDK and fixed issue with memory consumption.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Fri, 26 Jun 2015 13:00:00 +0300
+
+indi-asicam (0.2) vivid; urgency=low
+
+  * New upstream release.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Tue, 03 Mar 2014 09:00:00 +0300
+
+indi-asicam (0.1) trusty; urgency=low
+
+  * New upstream release.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Fri, 14 Mar 2014 09:00:00 +0300

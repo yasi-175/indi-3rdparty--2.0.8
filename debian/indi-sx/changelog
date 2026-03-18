@@ -1,0 +1,54 @@
+indi-sx (1.16) jammy; urgency=low
+
+  * Added option for unidirectional motion to SX wheels
+
+ -- Jarno Paananen <jarno.paananen@gmail.com>  Sun, 07 Aug 2022 14:47:12 +0300
+
+indi-sx (1.15) bionic; urgency=low
+
+  * Fixed bayer option.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Tue, 23 Dec 2019 23:57:00 +0300
+
+indi-sx (1.14) bionic; urgency=low
+
+  * Added Bayer filter support option for color cameras
+
+ -- Karl Rees <indidev@karlrees.com>  Mon, 04 Nov 2019 17:45:00 +0300
+
+indi-sx (1.13) bionic; urgency=low
+
+  * New release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 08 Apr 2018 17:45:00 +0300
+
+indi-sx (1.12) bionic; urgency=low
+
+  * New release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 22 Jan 2018 08:45:00 +0300
+
+indi-sx (1.4) precise; urgency=low
+
+  * New upstread release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 06 Jan 2014 13:19:48 +0300
+
+indi-sx (1.1) precise; urgency=low
+
+  * New upstread release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sat, 15 Sep 2012 13:19:48 +0300
+
+indi-sx (1.0-0ubuntu1~ppa3) natty; urgency=low
+
+  * Natty release
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Mon, 06 Jun 2011 23:41:58 +0300
+
+indi-sx (1.0-0ubuntu1~ppa1) natty; urgency=low
+
+  * Initial Release.
+
+ -- Jasem Mutlaq <mutlaqja@ikarustech.com>  Sun, 05 Jun 2011 02:02:17 +0300
+
