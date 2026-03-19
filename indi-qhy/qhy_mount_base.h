@@ -28,6 +28,10 @@ class QHYMountBase : public EQMod
         virtual const char *getDefaultName() override;
         virtual bool initProperties() override;
         virtual bool updateProperties() override;
+        virtual bool ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n) override;
         virtual bool updateTime(ln_date *utc, double utc_offset) override;
         virtual bool updateLocation(double latitude, double longitude, double elevation) override;
+
+    private:
+        INDI::PropertySwitch GoHomeSP {1};
 };

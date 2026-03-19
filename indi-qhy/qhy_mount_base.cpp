@@ -20,6 +20,8 @@
 #include <connectionplugins/connectionserial.h>
 #include <unistd.h>
 #include <libnova/ln_types.h>
+#include <cmath>
+#include <cstring>
 
 QHYMountBase::QHYMountBase() : EQMod()
 {
@@ -36,13 +38,29 @@ bool QHYMountBase::initProperties()
     // INDI 2.0.8 does not provide a safe properties container API
     // compatible with iterating over *getProperties() here.
     // Let EQMod handle property initialization completely.
-    return EQMod::initProperties();
+    const bool ok = EQMod::initProperties();
+
+    if (!ok)
+        return false;
+
+    GoHomeSP[0].fill("SLEWHOME", "GoHome", ISS_OFF);
+    GoHomeSP.fill(getDeviceName(), "TELESCOPE_HOME", "GoHome", MAIN_CONTROL_TAB, IP_RW, ISR_ATMOST1, 0, IPS_IDLE);
+
+    return true;
 }
 
 bool QHYMountBase::updateProperties()
 {
     // Call parent updateProperties first
     bool result = EQMod::updateProperties();
+
+    if (!result)
+        return false;
+
+    if (isConnected())
+        defineProperty(GoHomeSP);
+    else
+        deleteProperty(GoHomeSP);
 
     // If connected and mount is initialized, immediately sync system time and location
     if (result && isConnected() && mount)
@@ -76,6 +94,46 @@ bool QHYMountBase::updateProperties()
     }
 
     return result;
+}
+
+bool QHYMountBase::ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n)
+{
+    if (strcmp(dev, getDeviceName()) == 0 && GoHomeSP.isNameMatch(name))
+    {
+        GoHomeSP.update(states, names, n);
+
+        if (GoHomeSP[0].getState() == ISS_ON)
+        {
+            const double jd = getJulianDate();
+            const double lst = getLst(jd, getLongitude());
+            constexpr double homeHA = 6.0; // requested home hour angle
+
+            double targetRA = std::fmod(lst - homeHA + 24.0, 24.0);
+            if (targetRA < 0)
+                targetRA += 24.0;
+
+            const double targetDEC = (getLatitude() >= 0.0) ? 90.0 : -90.0;
+
+            LOGF_INFO("GoHome requested: current RA=%g DEC=%g, target HA=%g => target RA=%g DEC=%g",
+                      currentRA, currentDEC, homeHA, targetRA, targetDEC);
+
+            GoHomeSP.setState(IPS_BUSY);
+            GoHomeSP.apply();
+
+            const bool gotoStarted = Goto(targetRA, targetDEC);
+            GoHomeSP.reset();
+            GoHomeSP.setState(gotoStarted ? IPS_OK : IPS_ALERT);
+            GoHomeSP.apply(gotoStarted ? "GoHome slew started (target HA=6)." : "GoHome failed to start.");
+            return true;
+        }
+
+        GoHomeSP.reset();
+        GoHomeSP.setState(IPS_IDLE);
+        GoHomeSP.apply();
+        return true;
+    }
+
+    return EQMod::ISNewSwitch(dev, name, states, names, n);
 }
 
 bool QHYMountBase::updateTime(ln_date *utc, double utc_offset)
