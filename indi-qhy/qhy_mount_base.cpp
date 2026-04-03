@@ -35,9 +35,6 @@ const char * QHYMountBase::getDefaultName()
 
 bool QHYMountBase::initProperties()
 {
-    // INDI 2.0.8 does not provide a safe properties container API
-    // compatible with iterating over *getProperties() here.
-    // Let EQMod handle property initialization completely.
     const bool ok = EQMod::initProperties();
 
     if (!ok)
@@ -49,9 +46,41 @@ bool QHYMountBase::initProperties()
     return true;
 }
 
+bool QHYMountBase::ReadScopeStatus()
+{
+    const bool result = EQMod::ReadScopeStatus();
+
+    if (!result || !m_CustomHomeActive || mount == nullptr)
+        return result;
+
+    if (gotoInProgress() || TrackState == SCOPE_SLEWING)
+        return result;
+
+    try
+    {
+        if (!mount->IsRARunning() && !mount->IsDERunning())
+        {
+            if (TrackState == SCOPE_TRACKING)
+                SetTrackEnabled(false);
+            SetParked(false);
+            m_CustomHomeActive = false;
+            GoHomeSP.setState(IPS_IDLE);
+            GoHomeSP.reset();
+            GoHomeSP.apply("QHY GoHome completed. Tracking disabled at home position.");
+            LOG_INFO("QHY custom home completed. Tracking disabled at home position.");
+        }
+    }
+    catch (EQModError &e)
+    {
+        if (!(e.DefaultHandleException(this)))
+            LOGF_WARN("QHY custom home completion handling failed: %s", e.message);
+    }
+
+    return result;
+}
+
 bool QHYMountBase::updateProperties()
 {
-    // Call parent updateProperties first
     bool result = EQMod::updateProperties();
 
     if (!result)
@@ -62,38 +91,39 @@ bool QHYMountBase::updateProperties()
     else
         deleteProperty(GoHomeSP);
 
-    // If connected and mount is initialized, immediately sync system time and location
     if (result && isConnected() && mount)
     {
         try
         {
-            // Immediately sync system time when mount is connected
-            // This overrides any incorrect time from KStars
-            mount->SyncTimeAndTimezone();  // Uses system time
-
+            mount->SyncTimeAndTimezone();
             LOG_INFO("QHY Mount initial time synchronization completed with system time");
         }
         catch (EQModError &e)
         {
             LOGF_WARN("QHY Mount initial time synchronization failed: %s", e.message);
-            // Don't fail the connection for time sync issues
         }
 
         try
         {
-            // Also sync current location coordinates
-            mount->SyncLocationCoordinates();  // Uses current location from EQMod
-
+            mount->SyncLocationCoordinates();
             LOG_INFO("QHY Mount initial location synchronization completed");
         }
         catch (EQModError &e)
         {
             LOGF_WARN("QHY Mount initial location synchronization failed: %s", e.message);
-            // Don't fail the connection for location sync issues
         }
     }
 
     return result;
+}
+
+bool QHYMountBase::Abort()
+{
+    m_CustomHomeActive = false;
+    GoHomeSP.setState(IPS_IDLE);
+    GoHomeSP.reset();
+    GoHomeSP.apply();
+    return EQMod::Abort();
 }
 
 bool QHYMountBase::ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n)
@@ -102,34 +132,58 @@ bool QHYMountBase::ISNewSwitch(const char *dev, const char *name, ISState *state
     {
         GoHomeSP.update(states, names, n);
 
-        if (GoHomeSP[0].getState() == ISS_ON)
+        if (GoHomeSP[0].getState() != ISS_ON)
         {
-            const double jd = getJulianDate();
-            const double lst = getLst(jd, getLongitude());
-            constexpr double homeHA = 6.0; // requested home hour angle
-
-            double targetRA = std::fmod(lst - homeHA + 24.0, 24.0);
-            if (targetRA < 0)
-                targetRA += 24.0;
-
-            const double targetDEC = (getLatitude() >= 0.0) ? 90.0 : -90.0;
-
-            LOGF_INFO("GoHome requested: current RA=%g DEC=%g, target HA=%g => target RA=%g DEC=%g",
-                      currentRA, currentDEC, homeHA, targetRA, targetDEC);
-
-            GoHomeSP.setState(IPS_BUSY);
-            GoHomeSP.apply();
-
-            const bool gotoStarted = Goto(targetRA, targetDEC);
             GoHomeSP.reset();
-            GoHomeSP.setState(gotoStarted ? IPS_OK : IPS_ALERT);
-            GoHomeSP.apply(gotoStarted ? "GoHome slew started (target HA=6)." : "GoHome failed to start.");
+            GoHomeSP.setState(IPS_IDLE);
+            GoHomeSP.apply();
             return true;
         }
 
-        GoHomeSP.reset();
-        GoHomeSP.setState(IPS_IDLE);
-        GoHomeSP.apply();
+        if (m_CustomHomeActive)
+        {
+            LOG_WARN("Aborting QHY GoHome.");
+            Abort();
+            return true;
+        }
+
+        if (TrackState == SCOPE_SLEWING || TrackState == SCOPE_PARKING)
+        {
+            GoHomeSP.reset();
+            GoHomeSP.setState(IPS_IDLE);
+            GoHomeSP.apply("Can not start GoHome while mount motion is in progress.");
+            LOG_WARN("Can not start QHY GoHome while mount motion is in progress.");
+            return true;
+        }
+
+        const double jd = getJulianDate();
+        const double lst = getLst(jd, getLongitude());
+        constexpr double homeHA = 6.0;
+
+        double targetRA = std::fmod(lst - homeHA + 24.0, 24.0);
+        if (targetRA < 0)
+            targetRA += 24.0;
+
+        const double targetDEC = (getLatitude() >= 0.0) ? 90.0 : -90.0;
+
+        LOGF_INFO("QHY GoHome requested: current RA=%g DEC=%g, target HA=%g => target RA=%g DEC=%g",
+                  currentRA, currentDEC, homeHA, targetRA, targetDEC);
+
+        GoHomeSP.setState(IPS_BUSY);
+        GoHomeSP.apply("QHY GoHome slew started.");
+
+        suppressNextGotoTracking = true;
+        const bool gotoStarted = Goto(targetRA, targetDEC);
+        if (!gotoStarted)
+        {
+            suppressNextGotoTracking = false;
+            GoHomeSP.reset();
+            GoHomeSP.setState(IPS_ALERT);
+            GoHomeSP.apply("QHY GoHome failed to start.");
+            return true;
+        }
+
+        m_CustomHomeActive = true;
         return true;
     }
 
@@ -138,29 +192,21 @@ bool QHYMountBase::ISNewSwitch(const char *dev, const char *name, ISState *state
 
 bool QHYMountBase::updateTime(ln_date *utc, double utc_offset)
 {
-    // Log the time that KStars is trying to set
     LOGF_INFO("KStars trying to set time: %04d-%02d-%02d %02d:%02d:%02.0f UTC, offset: %.2f hours",
               utc->years, utc->months, utc->days, utc->hours, utc->minutes, utc->seconds, utc_offset);
 
-    // Call parent updateTime first
     bool result = EQMod::updateTime(utc, utc_offset);
 
-    // If connected and mount is initialized, sync time and timezone to QHY mount
-    // ALWAYS use system time instead of KStars time to ensure accuracy
     if (result && isConnected() && mount)
     {
         try
         {
-            // Always use system time instead of KStars time for QHY mount
-            // This ensures the mount gets the correct time even if KStars has time issues
-            mount->SyncTimeAndTimezone();  // This uses system time
-
+            mount->SyncTimeAndTimezone();
             LOG_INFO("QHY Mount time synchronization completed with system time (ignoring KStars time)");
         }
         catch (EQModError &e)
         {
             LOGF_WARN("QHY Mount time synchronization failed: %s", e.message);
-            // Don't fail the time update for sync issues
         }
     }
 
@@ -169,15 +215,12 @@ bool QHYMountBase::updateTime(ln_date *utc, double utc_offset)
 
 bool QHYMountBase::updateLocation(double latitude, double longitude, double elevation)
 {
-    // Call parent updateLocation first
     bool result = EQMod::updateLocation(latitude, longitude, elevation);
 
-    // If connected and mount is initialized, sync location coordinates to QHY mount
     if (result && isConnected() && mount)
     {
         try
         {
-            // Sync location coordinates to the mount
             mount->SyncLocationCoordinates(latitude, longitude, elevation);
 
             LOGF_INFO("QHY Mount location synchronization completed: Lat %.6f°, Lon %.6f°, Elev %.0fm",
@@ -186,7 +229,6 @@ bool QHYMountBase::updateLocation(double latitude, double longitude, double elev
         catch (EQModError &e)
         {
             LOGF_WARN("QHY Mount location synchronization failed: %s", e.message);
-            // Don't fail the location update for sync issues
         }
     }
 

@@ -118,7 +118,6 @@ class EQMod : public INDI::Telescope, public INDI::GuiderInterface
 #if defined WITH_ALIGN || defined WITH_ALIGN_GEEHALEL
         INDI::PropertySwitch   AlignSyncModeSP     {INDI::Property()};
 #endif
-        INDI::PropertySwitch   AutoHomeSP          {INDI::Property()};
         INDI::PropertySwitch   AuxEncoderSP        {INDI::Property()};
         INDI::PropertyNumber   AuxEncoderNP        {INDI::Property()};
 
@@ -193,17 +192,12 @@ class EQMod : public INDI::Telescope, public INDI::GuiderInterface
 #if defined WITH_ALIGN || defined WITH_ALIGN_GEEHALEL
         bool isStandardSync();
 #endif
-        // Autohoming for EQ8
-        int ah_confirm_timeout;
-        bool ah_bSlewingUp_RA, ah_bSlewingUp_DE;
-        uint32_t ah_iPosition_RA, ah_iPosition_DE;
-        int ah_iChanges;
-        bool ah_bIndexChanged_RA, ah_bIndexChanged_DE;
-        uint32_t ah_sHomeIndexPosition_RA, ah_sHomeIndexPosition_DE;
-        int ah_waitRA, ah_waitDE;
-
         // save PPEC status when guiding
         bool restartguidePPEC;
+
+        // Derived drivers can suppress the usual "resume tracking after goto" behavior
+        // for special slews like custom Home moves.
+        bool suppressNextGotoTracking { false };
 
         // One bit for each axis
         uint8_t pulseInProgress;
@@ -270,21 +264,6 @@ class EQMod : public INDI::Telescope, public INDI::GuiderInterface
 #ifdef WITH_SCOPE_LIMITS
         HorizonLimits *horizon;
 #endif
-        // AutoHoming for EQ8
-        static const TelescopeStatus SCOPE_AUTOHOMING = static_cast<TelescopeStatus>(SCOPE_PARKED + 1);
-        enum AutoHomeStatus
-        {
-            AUTO_HOME_IDLE,
-            AUTO_HOME_CONFIRM,
-            AUTO_HOME_WAIT_PHASE1,
-            AUTO_HOME_WAIT_PHASE2,
-            AUTO_HOME_WAIT_PHASE3,
-            AUTO_HOME_WAIT_PHASE4,
-            AUTO_HOME_WAIT_PHASE5,
-            AUTO_HOME_WAIT_PHASE6
-        };
-        AutoHomeStatus AutohomeState;
-
         int DBG_SCOPE_STATUS {0};
         int DBG_COMM {0};
         int DBG_MOUNT {0};

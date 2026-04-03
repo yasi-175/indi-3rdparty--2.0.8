@@ -111,6 +111,8 @@ class Skywatcher
         void SlewDE(double rate);
         void StopRA();
         void StopDE();
+        void InstantStopRA();
+        void InstantStopDE();
         void SetRARate(double rate);
         void SetDERate(double rate);
         void SlewTo(int32_t deltaraencoder, int32_t deltadeencoder);

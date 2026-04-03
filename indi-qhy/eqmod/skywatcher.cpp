@@ -1885,6 +1885,18 @@ void Skywatcher::StopDE()
     StopWaitMotor(Axis2);
 }
 
+void Skywatcher::InstantStopRA()
+{
+    LOGF_DEBUG("%s() : calling RA InstantStopMotor", __FUNCTION__);
+    InstantStopMotor(Axis1);
+}
+
+void Skywatcher::InstantStopDE()
+{
+    LOGF_DEBUG("%s() : calling DE InstantStopMotor", __FUNCTION__);
+    InstantStopMotor(Axis2);
+}
+
 void Skywatcher::SetMotion(SkywatcherAxis axis, SkywatcherAxisStatus newstatus)
 {
     char motioncmd[3];
