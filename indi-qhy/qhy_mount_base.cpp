@@ -28,6 +28,22 @@ QHYMountBase::QHYMountBase() : EQMod()
     setTelescopeConnection(CONNECTION_SERIAL);
 }
 
+void QHYMountBase::resetCustomMotionState()
+{
+    // Custom Home/Park completion is handled entirely in this class, so the next
+    // normal Goto should behave like a regular slew and be free to re-enable tracking.
+    suppressNextGotoTracking = false;
+    gotoparams.completed     = true;
+
+    if (CanControlTrack())
+        SetTrackEnabled(false);
+    else
+    {
+        TrackState         = SCOPE_IDLE;
+        RememberTrackState = TrackState;
+    }
+}
+
 const char * QHYMountBase::getDefaultName()
 {
     return "QHY Mount";
@@ -48,27 +64,72 @@ bool QHYMountBase::initProperties()
 
 bool QHYMountBase::ReadScopeStatus()
 {
+    if (mount == nullptr)
+        return false;
+
+    if (m_CustomHomeActive || m_CustomParkActive)
+    {
+        try
+        {
+            currentRA  = mount->GetRAEncoder();
+            currentDEC = mount->GetDEEncoder();
+            NewRaDec(currentRA, currentDEC);
+
+            const bool raRunning = mount->IsRARunning();
+            const bool deRunning = mount->IsDERunning();
+            if (raRunning || deRunning)
+                return true;
+
+            // Make completion idempotent and avoid re-entering the generic EQMod goto/tracking
+            // completion path for QHY custom semantic motions.
+            try
+            {
+                mount->StopRA();
+                mount->StopDE();
+            }
+            catch (EQModError &e)
+            {
+                LOGF_WARN("QHY custom motion stop-on-complete failed: %s", e.message);
+            }
+
+            resetCustomMotionState();
+
+            if (m_CustomHomeActive)
+            {
+                if (isParked())
+                    SetParked(false);
+
+                m_CustomHomeActive = false;
+                GoHomeSP.setState(IPS_IDLE);
+                GoHomeSP.reset();
+                GoHomeSP.apply("QHY GoHome completed. Tracking disabled at home position.");
+                LOG_INFO("QHY custom home completed. Tracking disabled at home position.");
+            }
+
+            if (m_CustomParkActive)
+            {
+                m_CustomParkActive = false;
+                SetParked(true);
+                LOG_INFO("QHY custom park completed.");
+            }
+
+            return true;
+        }
+        catch (EQModError &e)
+        {
+            return e.DefaultHandleException(this);
+        }
+    }
+
     const bool result = EQMod::ReadScopeStatus();
 
-    if (!result || !m_CustomHomeActive || mount == nullptr)
-        return result;
-
-    if (gotoInProgress() || TrackState == SCOPE_SLEWING)
+    if (!result)
         return result;
 
     try
     {
-        if (!mount->IsRARunning() && !mount->IsDERunning())
-        {
-            if (TrackState == SCOPE_TRACKING)
-                SetTrackEnabled(false);
-            SetParked(false);
-            m_CustomHomeActive = false;
-            GoHomeSP.setState(IPS_IDLE);
-            GoHomeSP.reset();
-            GoHomeSP.apply("QHY GoHome completed. Tracking disabled at home position.");
-            LOG_INFO("QHY custom home completed. Tracking disabled at home position.");
-        }
+        // No custom handling here. Custom Home/Park is handled before EQMod::ReadScopeStatus()
+        // so the generic iterative goto/tracking completion logic can not interfere.
     }
     catch (EQModError &e)
     {
@@ -120,10 +181,75 @@ bool QHYMountBase::updateProperties()
 bool QHYMountBase::Abort()
 {
     m_CustomHomeActive = false;
+    m_CustomParkActive = false;
     GoHomeSP.setState(IPS_IDLE);
     GoHomeSP.reset();
     GoHomeSP.apply();
+    resetCustomMotionState();
     return EQMod::Abort();
+}
+
+bool QHYMountBase::Park()
+{
+    if (isParked())
+        return true;
+
+    if (TrackState == SCOPE_SLEWING || m_CustomHomeActive || m_CustomParkActive)
+    {
+        LOG_WARN("Can not start QHY custom park while another motion is in progress.");
+        return false;
+    }
+
+    try
+    {
+        if (!mount->ExecuteQHYPark())
+            return false;
+    }
+    catch (EQModError &e)
+    {
+        return e.DefaultHandleException(this);
+    }
+
+    m_CustomParkActive = true;
+    m_CustomHomeActive = false;
+    suppressNextGotoTracking = false;
+    gotoparams.completed     = true;
+    TrackState = SCOPE_PARKING;
+    RememberTrackState = TrackState;
+    LOG_INFO("QHY custom park started.");
+    return true;
+}
+
+bool QHYMountBase::SetCurrentPark()
+{
+    try
+    {
+        if (!mount->ExecuteQHYSetPark())
+            return false;
+    }
+    catch (EQModError &e)
+    {
+        return e.DefaultHandleException(this);
+    }
+
+    LOG_INFO("QHY custom park position stored from current absolute encoder values.");
+    return true;
+}
+
+bool QHYMountBase::SetDefaultPark()
+{
+    try
+    {
+        if (!mount->ClearQHYPark())
+            return false;
+    }
+    catch (EQModError &e)
+    {
+        return e.DefaultHandleException(this);
+    }
+
+    LOG_INFO("QHY custom park position cleared. Park will fall back to Home.");
+    return true;
 }
 
 bool QHYMountBase::ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n)
@@ -156,27 +282,21 @@ bool QHYMountBase::ISNewSwitch(const char *dev, const char *name, ISState *state
             return true;
         }
 
-        const double jd = getJulianDate();
-        const double lst = getLst(jd, getLongitude());
-        constexpr double homeHA = 6.0;
-
-        double targetRA = std::fmod(lst - homeHA + 24.0, 24.0);
-        if (targetRA < 0)
-            targetRA += 24.0;
-
-        const double targetDEC = (getLatitude() >= 0.0) ? 90.0 : -90.0;
-
-        LOGF_INFO("QHY GoHome requested: current RA=%g DEC=%g, target HA=%g => target RA=%g DEC=%g",
-                  currentRA, currentDEC, homeHA, targetRA, targetDEC);
-
         GoHomeSP.setState(IPS_BUSY);
-        GoHomeSP.apply("QHY GoHome slew started.");
+        GoHomeSP.apply("QHY GoHome started.");
 
-        suppressNextGotoTracking = true;
-        const bool gotoStarted = Goto(targetRA, targetDEC);
-        if (!gotoStarted)
+        bool homeStarted = false;
+        try
         {
-            suppressNextGotoTracking = false;
+            homeStarted = mount->ExecuteQHYHome();
+        }
+        catch (EQModError &e)
+        {
+            e.DefaultHandleException(this);
+        }
+
+        if (!homeStarted)
+        {
             GoHomeSP.reset();
             GoHomeSP.setState(IPS_ALERT);
             GoHomeSP.apply("QHY GoHome failed to start.");
@@ -184,6 +304,12 @@ bool QHYMountBase::ISNewSwitch(const char *dev, const char *name, ISState *state
         }
 
         m_CustomHomeActive = true;
+        m_CustomParkActive = false;
+        suppressNextGotoTracking = false;
+        gotoparams.completed     = true;
+        TrackState = SCOPE_SLEWING;
+        RememberTrackState = TrackState;
+        LOG_INFO("QHY GoHome requested using firmware-stored absolute encoder targets.");
         return true;
     }
 

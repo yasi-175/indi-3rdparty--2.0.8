@@ -30,7 +30,7 @@ class EQMod; // TODO
 
 #include "simulator/simulator.h"
 
-#define SKYWATCHER_MAX_CMD      32
+#define SKYWATCHER_MAX_CMD      256
 #define SKYWATCHER_MAX_TRIES    3
 #define SKYWATCHER_ERROR_BUFFER 1024
 
@@ -169,6 +169,10 @@ class Skywatcher
 
         // QHY: send sync delta (RA hours, DEC degrees) to firmware in one combined command
         void SendSyncDelta(double delta_ra, double delta_de);
+        bool ExecuteQHYHome();
+        bool ExecuteQHYPark();
+        bool ExecuteQHYSetPark();
+        bool ClearQHYPark();
 
         void setPortFD(int value);
 
@@ -215,7 +219,11 @@ class Skywatcher
             SetTimeAndTimezone        = 'T', // QHY Mount time synchronization
             SetLocationCoordinates    = 'Z', // QHY Mount location synchronization
             SetTargetAndCurrentPos    = 'X', // QHY Mount target and current position
-            SetSyncDelta              = 'Y'  // QHY Mount sync delta (deltaRA, deltaDEC)
+            SetSyncDelta              = 'Y', // QHY Mount sync delta (deltaRA, deltaDEC)
+            QHYGoHome                 = 'h',
+            QHYPark                   = 'p',
+            QHYSetPark                = 'r',
+            QHYClearPark              = 'c'
         };
 
         enum SkywatcherAxis
@@ -361,10 +369,10 @@ class Skywatcher
         uint32_t lastRAPeriod {0xFFFFFFFF};
         uint32_t lastDEPeriod {0xFFFFFFFF};
 
-        bool RAInitialized, DEInitialized, RARunning, DERunning;
-        bool wasinitialized;
-        SkywatcherAxisStatus RAStatus, DEStatus;
-        SkyWatcherFeatures AxisFeatures[NUMBER_OF_SKYWATCHERAXIS];
+        bool RAInitialized { false }, DEInitialized { false }, RARunning { false }, DERunning { false };
+        bool wasinitialized { false };
+        SkywatcherAxisStatus RAStatus {}, DEStatus {};
+        SkyWatcherFeatures AxisFeatures[NUMBER_OF_SKYWATCHERAXIS] {};
 
         int PortFD = -1;
         char command[SKYWATCHER_MAX_CMD];

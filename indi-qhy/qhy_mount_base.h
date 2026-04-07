@@ -31,10 +31,15 @@ class QHYMountBase : public EQMod
         virtual bool updateProperties() override;
         virtual bool ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n) override;
         virtual bool Abort() override;
+        virtual bool Park() override;
+        virtual bool SetCurrentPark() override;
+        virtual bool SetDefaultPark() override;
         virtual bool updateTime(ln_date *utc, double utc_offset) override;
         virtual bool updateLocation(double latitude, double longitude, double elevation) override;
 
     private:
+        void resetCustomMotionState();
         INDI::PropertySwitch GoHomeSP {1};
         bool m_CustomHomeActive { false };
+        bool m_CustomParkActive { false };
 };

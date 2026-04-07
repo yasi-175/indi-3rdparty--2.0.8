@@ -21,6 +21,7 @@
 
 #include <indicom.h>
 
+#include <algorithm>
 #include <termios.h>
 #include <cmath>
 #include <cstring>
@@ -127,6 +128,26 @@ void Skywatcher::SendSyncDelta(double delta_ra, double delta_de)
         //throw EQModError(EQModError::ErrCommunication, "Failed to send RA sync delta to mount");
 
     
+}
+
+bool Skywatcher::ExecuteQHYHome()
+{
+    return dispatch_command(QHYGoHome, Axis1, nullptr);
+}
+
+bool Skywatcher::ExecuteQHYPark()
+{
+    return dispatch_command(QHYPark, Axis1, nullptr);
+}
+
+bool Skywatcher::ExecuteQHYSetPark()
+{
+    return dispatch_command(QHYSetPark, Axis1, nullptr);
+}
+
+bool Skywatcher::ClearQHYPark()
+{
+    return dispatch_command(QHYClearPark, Axis1, nullptr);
 }
 
 double Skywatcher::GetRAEncoder()
@@ -2171,12 +2192,23 @@ bool Skywatcher::read_eqmod()
     {
         telescope->simulator->send_reply(response, &nbytes_read);
     }
-    // Remove CR
-    response[nbytes_read - 1] = '\0';
+    if (nbytes_read <= 0)
+    {
+        throw EQModError(EQModError::ErrDisconnect, "Empty response to command %s", command);
+    }
+
+    // Remove trailing CR when present, otherwise keep the payload and terminate safely.
+    if (response[nbytes_read - 1] == SkywatcherTrailingChar)
+        response[nbytes_read - 1] = '\0';
+    else if (nbytes_read < SKYWATCHER_MAX_CMD)
+        response[nbytes_read] = '\0';
+    else
+        response[SKYWATCHER_MAX_CMD - 1] = '\0';
 
     if (debugnextread)
     {
-        DEBUGF(telescope->DBG_COMM, "read_eqmod: \"%s\", %d bytes read", response, nbytes_read);
+        const int logged_len = std::min(nbytes_read, SKYWATCHER_MAX_CMD - 1);
+        DEBUGF(telescope->DBG_COMM, "read_eqmod: \"%.*s\", %d bytes read", logged_len, response, nbytes_read);
         debugnextread = false;
     }
 
