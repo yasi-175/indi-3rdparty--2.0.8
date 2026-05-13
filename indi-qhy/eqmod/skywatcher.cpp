@@ -114,20 +114,15 @@ bool Skywatcher::Disconnect()
     return true;
 }
 
-void Skywatcher::SendSyncDelta(double delta_ra, double delta_de)
+void Skywatcher::SendSyncCoordinates(double ra, double de)
 {
-    
-    // Send delta RA on Axis1 and delta DEC on Axis2 so firmware can adjust its model
     char arg_ra_de[32];
-    snprintf(arg_ra_de, sizeof(arg_ra_de), "%.6f,%.6f", delta_ra,delta_de);
+    snprintf(arg_ra_de, sizeof(arg_ra_de), "%.6f,%.6f", ra, de);
 
-    LOGF_INFO("Sending sync delta to mount: dRA=%s (Axis1) ", arg_ra_de);
+    LOGF_INFO("Sending sync coordinates to mount: RA/DE=%s", arg_ra_de);
 
-    if (!dispatch_command(SetSyncDelta, Axis1, arg_ra_de))
-        LOGF_WARN("%s() : Failed to send RA sync delta to mount", __FUNCTION__);
-        //throw EQModError(EQModError::ErrCommunication, "Failed to send RA sync delta to mount");
-
-    
+    if (!dispatch_command(SetSyncCoordinates, Axis1, arg_ra_de))
+        LOGF_WARN("%s() : Failed to send sync coordinates to mount", __FUNCTION__);
 }
 
 bool Skywatcher::ExecuteQHYHome()

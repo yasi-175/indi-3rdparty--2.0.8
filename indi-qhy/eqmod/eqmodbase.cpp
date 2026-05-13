@@ -892,19 +892,9 @@ bool EQMod::ReadScopeStatus()
 #endif
         if (!aligned && (syncdata.lst != 0.0))
         {
-            DEBUGF(DBG_SCOPE_STATUS, "Aligning with last sync delta RA %g DE %g", syncdata.deltaRA, syncdata.deltaDEC);
-            // should check values are in range!
-            alignedRA += syncdata.deltaRA;
-            alignedDEC += syncdata.deltaDEC;
-            if (alignedDEC > 90.0 || alignedDEC < -90.0)
-            {
-                alignedRA += 12.00;
-                if (alignedDEC > 0.0)
-                    alignedDEC = 180.0 - alignedDEC;
-                else
-                    alignedDEC = -180.0 - alignedDEC;
-            }
-            alignedRA = range24(alignedRA);
+            DEBUGF(DBG_SCOPE_STATUS,
+                   "Skipping driver-side sync delta RA %g DE %g because QHY firmware applies the sync model",
+                   syncdata.deltaRA, syncdata.deltaDEC);
         }
 
 #if defined WITH_ALIGN_GEEHALEL && !defined WITH_ALIGN
@@ -1546,10 +1536,10 @@ bool EQMod::Goto(double r, double d)
         {
             if (syncdata.lst != 0.0)
             {
-                ghratarget = gotoparams.ratarget - syncdata.deltaRA;
-                ghdetarget = gotoparams.detarget - syncdata.deltaDEC;
-                LOGF_INFO("Failed Eqmod Goto RA=%g DE=%g (target RA=%g DE=%g)", ghratarget,
-                          ghdetarget, r, d);
+                ghratarget = gotoparams.ratarget;
+                ghdetarget = gotoparams.detarget;
+                LOGF_INFO("QHY firmware owns sync correction; using unmodified Goto RA=%g DE=%g",
+                          ghratarget, ghdetarget);
             }
         }
     }
@@ -1566,8 +1556,9 @@ bool EQMod::Goto(double r, double d)
                    gotoparams.detarget);
             if (syncdata.lst != 0.0)
             {
-                gotoparams.ratarget -= syncdata.deltaRA;
-                gotoparams.detarget -= syncdata.deltaDEC;
+                DEBUGF(INDI::AlignmentSubsystem::DBG_ALIGNMENT,
+                       "QHY firmware owns sync correction; leaving Goto RA=%lf DE=%lf unchanged",
+                       gotoparams.ratarget, gotoparams.detarget);
             }
         }
         else
@@ -1588,8 +1579,8 @@ bool EQMod::Goto(double r, double d)
 
     if (!aligned && (syncdata.lst != 0.0))
     {
-        gotoparams.ratarget -= syncdata.deltaRA;
-        gotoparams.detarget -= syncdata.deltaDEC;
+        LOGF_DEBUG("QHY firmware owns sync correction; leaving Goto RA=%g DE=%g unchanged",
+                   gotoparams.ratarget, gotoparams.detarget);
     }
 
 #if defined WITH_ALIGN_GEEHALEL && !defined WITH_ALIGN
@@ -1767,7 +1758,9 @@ bool EQMod::Sync(double ra, double dec)
     tmpsyncdata.targetRA  = ra;
     tmpsyncdata.targetDEC = dec;
 
-    // Compute delta in sky coordinates; firmware applies the model update.
+    // Keep the standard sync delta for INDI alignment/display. The firmware
+    // receives the absolute sync coordinates and computes its local model
+    // offset from the current physical encoder position.
     tmpsyncdata.deltaRA  = tmpsyncdata.targetRA - tmpsyncdata.telescopeRA;
     tmpsyncdata.deltaDEC = tmpsyncdata.targetDEC - tmpsyncdata.telescopeDEC;
 
@@ -1778,11 +1771,11 @@ bool EQMod::Sync(double ra, double dec)
 
     try
     {
-        mount->SendSyncDelta(tmpsyncdata.deltaRA, tmpsyncdata.deltaDEC);
+        mount->SendSyncCoordinates(tmpsyncdata.targetRA, tmpsyncdata.targetDEC);
     }
     catch (EQModError &e)
     {
-        LOGF_ERROR("Failed to send sync delta: %s", e.message);
+        LOGF_ERROR("Failed to send sync coordinates: %s", e.message);
     }
 #ifdef WITH_ALIGN_GEEHALEL
     if (align && !isStandardSync())

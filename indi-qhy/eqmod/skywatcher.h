@@ -167,8 +167,8 @@ class Skywatcher
         void SyncLocationCoordinates();
         void SyncLocationCoordinates(double latitude, double longitude, double elevation);
 
-        // QHY: send sync delta (RA hours, DEC degrees) to firmware in one combined command
-        void SendSyncDelta(double delta_ra, double delta_de);
+        // QHY: send absolute sync coordinates (RA hours, DEC degrees) to firmware.
+        void SendSyncCoordinates(double ra, double de);
         bool ExecuteQHYHome();
         bool ExecuteQHYPark();
         bool ExecuteQHYSetPark();
@@ -219,7 +219,7 @@ class Skywatcher
             SetTimeAndTimezone        = 'T', // QHY Mount time synchronization
             SetLocationCoordinates    = 'Z', // QHY Mount location synchronization
             SetTargetAndCurrentPos    = 'X', // QHY Mount target and current position
-            SetSyncDelta              = 'Y', // QHY Mount sync delta (deltaRA, deltaDEC)
+            SetSyncCoordinates        = 'Y', // QHY Mount sync coordinates (RA, DEC)
             QHYGoHome                 = 'h',
             QHYPark                   = 'p',
             QHYSetPark                = 'r',
