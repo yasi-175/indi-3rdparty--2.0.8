@@ -103,6 +103,16 @@ int timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *
 }
 #endif
 
+namespace
+{
+constexpr double QHY_ARCSEC_PER_MOTOR_HZ = 0.253125;
+
+double qhyArcsecRateToMotorHz(double arcsecPerSecond)
+{
+    return arcsecPerSecond / QHY_ARCSEC_PER_MOTOR_HZ;
+}
+}
+
 EQMod::EQMod()
 {
     //ctor
@@ -1353,19 +1363,19 @@ double EQMod::GetRATrackRate()
         return 0.0;
     if (!strcmp(sw->name, "TRACK_SIDEREAL"))
     {
-        rate = TRACKRATE_SIDEREAL / 0.253125;
+        rate = qhyArcsecRateToMotorHz(TRACKRATE_SIDEREAL);
     }
     else if (!strcmp(sw->name, "TRACK_LUNAR"))
     {
-        rate = TRACKRATE_LUNAR / 0.253125;
+        rate = qhyArcsecRateToMotorHz(TRACKRATE_LUNAR);
     }
     else if (!strcmp(sw->name, "TRACK_SOLAR"))
     {
-        rate = TRACKRATE_SOLAR / 0.253125;
+        rate = qhyArcsecRateToMotorHz(TRACKRATE_SOLAR);
     }
     else if (!strcmp(sw->name, "TRACK_CUSTOM"))
     {
-        rate = IUFindNumber(&TrackRateNP, "TRACK_RATE_RA")->value / 0.253125;
+        rate = qhyArcsecRateToMotorHz(IUFindNumber(&TrackRateNP, "TRACK_RATE_RA")->value);
     }
     else
         return 0.0;
@@ -1395,7 +1405,7 @@ double EQMod::GetDETrackRate()
     }
     else if (!strcmp(sw->name, "TRACK_CUSTOM"))
     {
-        rate = IUFindNumber(&TrackRateNP, "TRACK_RATE_DE")->value;
+        rate = qhyArcsecRateToMotorHz(IUFindNumber(&TrackRateNP, "TRACK_RATE_DE")->value);
     }
     else
         return 0.0;
@@ -1413,19 +1423,19 @@ double EQMod::GetDefaultRATrackRate()
         return 0.0;
     if (!strcmp(sw->name, "TRACK_SIDEREAL"))
     {
-        rate = TRACKRATE_SIDEREAL / 0.253125;
+        rate = qhyArcsecRateToMotorHz(TRACKRATE_SIDEREAL);
     }
     else if (!strcmp(sw->name, "TRACK_LUNAR"))
     {
-        rate = TRACKRATE_LUNAR / 0.253125;
+        rate = qhyArcsecRateToMotorHz(TRACKRATE_LUNAR);
     }
     else if (!strcmp(sw->name, "TRACK_SOLAR"))
     {
-        rate = TRACKRATE_SOLAR / 0.253125;
+        rate = qhyArcsecRateToMotorHz(TRACKRATE_SOLAR);
     }
     else if (!strcmp(sw->name, "TRACK_CUSTOM"))
     {
-        rate = IUFindNumber(&TrackRateNP, "TRACK_RATE_RA")->value / 0.253125;
+        rate = qhyArcsecRateToMotorHz(IUFindNumber(&TrackRateNP, "TRACK_RATE_RA")->value);
     }
     else
         return 0.0;
@@ -1455,7 +1465,7 @@ double EQMod::GetDefaultDETrackRate()
     }
     else if (!strcmp(sw->name, "TRACK_CUSTOM"))
     {
-        rate = IUFindNumber(&TrackRateNP, "TRACK_RATE_DE")->value;
+        rate = qhyArcsecRateToMotorHz(IUFindNumber(&TrackRateNP, "TRACK_RATE_DE")->value);
     }
     else
         return 0.0;
@@ -1856,7 +1866,7 @@ IPState EQMod::GuideNorth(uint32_t ms)
         return IPS_IDLE;
     }
 
-    double rateshift = TRACKRATE_SIDEREAL * GuideRateNP.findWidgetByName("GUIDE_RATE_NS")->getValue();
+    double rateshift = qhyArcsecRateToMotorHz(TRACKRATE_SIDEREAL * GuideRateNP.findWidgetByName("GUIDE_RATE_NS")->getValue());
     LOGF_DEBUG("Timed guide North %d ms at rate %g %s", ms, rateshift, DEInverted ? "(Inverted)" : "");
 
     IPState pulseState = IPS_BUSY;
@@ -1920,7 +1930,7 @@ IPState EQMod::GuideSouth(uint32_t ms)
     }
 
     double rateshift = 0.0;
-    rateshift        = TRACKRATE_SIDEREAL * GuideRateNP.findWidgetByName("GUIDE_RATE_NS")->getValue();
+    rateshift        = qhyArcsecRateToMotorHz(TRACKRATE_SIDEREAL * GuideRateNP.findWidgetByName("GUIDE_RATE_NS")->getValue());
     LOGF_DEBUG("Timed guide South %d ms at rate %g %s", ms, rateshift, DEInverted ? "(Inverted)" : "");
 
     IPState pulseState = IPS_BUSY;
@@ -1983,7 +1993,7 @@ IPState EQMod::GuideEast(uint32_t ms)
     }
 
     double rateshift = 0.0;
-    rateshift        = TRACKRATE_SIDEREAL * GuideRateNP.findWidgetByName("GUIDE_RATE_WE")->getValue();
+    rateshift        = qhyArcsecRateToMotorHz(TRACKRATE_SIDEREAL * GuideRateNP.findWidgetByName("GUIDE_RATE_WE")->getValue());
     LOGF_DEBUG("Timed guide East %d ms at rate %g %s", ms, rateshift, RAInverted ? "(Inverted)" : "");
 
     IPState pulseState = IPS_BUSY;
@@ -2066,7 +2076,7 @@ IPState EQMod::GuideWest(uint32_t ms)
     }
 
     double rateshift = 0.0;
-    rateshift        = TRACKRATE_SIDEREAL * GuideRateNP.findWidgetByName("GUIDE_RATE_WE")->getValue();
+    rateshift        = qhyArcsecRateToMotorHz(TRACKRATE_SIDEREAL * GuideRateNP.findWidgetByName("GUIDE_RATE_WE")->getValue());
     LOGF_DEBUG("Timed guide West %d ms at rate %g %s", ms, rateshift, RAInverted ? "(Inverted)" : "");
 
     IPState pulseState = IPS_BUSY;
@@ -3247,8 +3257,8 @@ bool EQMod::SetTrackRate(double raRate, double deRate)
 {
     try
     {
-        mount->SetRARate(raRate / SKYWATCHER_STELLAR_SPEED);
-        mount->SetDERate(deRate / SKYWATCHER_STELLAR_SPEED);
+        mount->SetRARate(qhyArcsecRateToMotorHz(raRate));
+        mount->SetDERate(qhyArcsecRateToMotorHz(deRate));
     }
     catch (EQModError e)
     {

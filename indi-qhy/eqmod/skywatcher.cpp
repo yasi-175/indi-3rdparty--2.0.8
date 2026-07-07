@@ -1419,7 +1419,7 @@ void Skywatcher::StartRATracking(double trackspeed)
         rate = trackspeed ;
     else
         rate = 0.0;
-    LOGF_DEBUG("%s() : trackspeed = %g arcsecs/s, computed rate = %g", __FUNCTION__, trackspeed,
+    LOGF_DEBUG("%s() : trackspeed = %g, computed rate = %g", __FUNCTION__, trackspeed,
                rate);
     if (rate != 0.0)
     {
@@ -1435,10 +1435,10 @@ void Skywatcher::StartDETracking(double trackspeed)
 {
     double rate;
     if (trackspeed != 0.0)
-        rate = trackspeed / SKYWATCHER_STELLAR_SPEED;
+        rate = (MountCode == QHY_MOUNT_CODE) ? trackspeed : trackspeed / SKYWATCHER_STELLAR_SPEED;
     else
         rate = 0.0;
-    LOGF_DEBUG("%s() : trackspeed = %g arcsecs/s, computed rate = %g", __FUNCTION__, trackspeed,
+    LOGF_DEBUG("%s() : trackspeed = %g, computed rate = %g", __FUNCTION__, trackspeed,
                rate);
     if (rate != 0.0)
     {
