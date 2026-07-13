@@ -105,8 +105,6 @@ int timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *
 
 namespace
 {
-constexpr double QHY_ARCSEC_PER_MOTOR_HZ = 0.253125;
-
 double qhyArcsecRateToMotorHz(double arcsecPerSecond)
 {
     return arcsecPerSecond / QHY_ARCSEC_PER_MOTOR_HZ;

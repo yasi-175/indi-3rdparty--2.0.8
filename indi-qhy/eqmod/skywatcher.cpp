@@ -931,11 +931,9 @@ void Skywatcher::SlewRA(double rate)
     // QHY Mount uses direct frequency control instead of complex calculations
     if (MountCode == QHY_MOUNT_CODE) // QHY Mount
     {
-        // For QHY Mount: period directly represents motor frequency in kHz
-        // period = 10 -> 10kHz, period = 1 -> 1kHz, period = 0.1 -> 100Hz, period = 0.01 -> 10Hz
-        // Maximum frequency is 40kHz, minimum is 0.01kHz (10Hz)
-        double staller_speed = 59.26;
-        double frequency_khz = absrate * staller_speed / 1000;
+        // QHY protocol value is motor_kHz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ.
+        // Maximum frequency is 40 kHz, minimum is 0.01 kHz (10 Hz).
+        double frequency_khz = absrate * QHY_SIDEREAL_MOTOR_HZ / QHY_MOTOR_HZ_PER_KHZ;
 
         // 限制频率范围
         if (frequency_khz > QHY_MAX_FREQUENCY_KHZ)
@@ -946,13 +944,13 @@ void Skywatcher::SlewRA(double rate)
         //LOGF_INFO(" frequency_khz = %g", frequency_khz);
 
         // 计算 period 并调试
-        double calculated_period = frequency_khz * 100000;
+        double calculated_period = frequency_khz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ;
         //LOGF_INFO(" calculated_period (raw) = %g", calculated_period);
 
         period = static_cast<uint32_t>(calculated_period);  // 直接赋值给函数级别的period变量
         //LOGF_INFO(" period (uint32_t) = %u", period);  // 注意：用 %u 而不是 %g
         // For QHY mount, we don't use high/low speed distinction in the same way
-        useHighspeed = (frequency_khz > 0.01); // Consider > 1kHz as high speed
+        useHighspeed = (frequency_khz > QHY_SLEW_HIGH_SPEED_THRESHOLD_KHZ);
     }
     else
     {
@@ -1005,11 +1003,9 @@ void Skywatcher::SlewDE(double rate)
     // QHY Mount uses direct frequency control instead of complex calculations
     if (MountCode == QHY_MOUNT_CODE) // QHY Mount
     {
-        // For QHY Mount: period directly represents motor frequency in kHz
-        // period = 10 -> 10kHz, period = 1 -> 1kHz, period = 0.1 -> 100Hz, period = 0.01 -> 10Hz
-        // Maximum frequency is 40kHz, minimum is 0.01kHz (10Hz)
-        double staller_speed = 59.26;
-        double frequency_khz = absrate * staller_speed / 1000;
+        // QHY protocol value is motor_kHz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ.
+        // Maximum frequency is 40 kHz, minimum is 0.01 kHz (10 Hz).
+        double frequency_khz = absrate * QHY_SIDEREAL_MOTOR_HZ / QHY_MOTOR_HZ_PER_KHZ;
 
         // 限制频率范围
         if (frequency_khz > QHY_MAX_FREQUENCY_KHZ)
@@ -1020,14 +1016,14 @@ void Skywatcher::SlewDE(double rate)
         //LOGF_INFO(" frequency_khz = %g", frequency_khz);
 
         // 计算 period 并调试
-        double calculated_period = frequency_khz * 100000;
+        double calculated_period = frequency_khz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ;
         //LOGF_INFO(" calculated_period (raw) = %g", calculated_period);
 
         period = static_cast<uint32_t>(calculated_period);  // 直接赋值给函数级别的period变量
         //LOGF_INFO(" period (uint32_t) = %u", period);  // 注意：用 %u 而不是 %g
 
         // For QHY mount, we don't use high/low speed distinction in the same way
-        useHighspeed = (frequency_khz > 0.01); // Consider > 1kHz as high speed
+        useHighspeed = (frequency_khz > QHY_SLEW_HIGH_SPEED_THRESHOLD_KHZ);
     }
     else
     {
@@ -1289,23 +1285,22 @@ void Skywatcher::SetRARate(double rate)
     // QHY Mount uses direct frequency control instead of complex calculations
     if (MountCode == QHY_MOUNT_CODE) // QHY Mount
     {
-        // For QHY Mount: period directly represents motor frequency in kHz
-        // period = 10 -> 10kHz, period = 1 -> 1kHz, period = 0.1 -> 100Hz, period = 0.01 -> 10Hz
-        // Maximum frequency is 40kHz, minimum is 0.01kHz (10Hz)
-        double frequency_khz = absrate / 1000; // Use rate directly as frequency in kHz
+        // QHY protocol value is motor_kHz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ.
+        // Maximum frequency is 40 kHz, minimum is 0.01 kHz (10 Hz).
+        double frequency_khz = absrate / QHY_MOTOR_HZ_PER_KHZ; // Use rate directly as frequency in kHz
         if (frequency_khz > QHY_MAX_FREQUENCY_KHZ)
             frequency_khz = QHY_MAX_FREQUENCY_KHZ; // Firmware limit: max 40kHz
         if (frequency_khz < QHY_MIN_FREQUENCY_KHZ)
             frequency_khz = QHY_MIN_FREQUENCY_KHZ; // Firmware limit: min 10Hz
 
         // 计算 period 并调试
-        double calculated_period = frequency_khz * 100000;
+        double calculated_period = frequency_khz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ;
         //LOGF_INFO(" calculated_period (raw) = %g", calculated_period);
 
         period = static_cast<uint32_t>(calculated_period);  // 直接赋值给函数级别的period变量
         //LOGF_INFO(" period (uint32_t) = %u", period);  // 注意：用 %u 而不是 %g
         // For QHY mount, we don't use high/low speed distinction in the same way
-        useHighspeed = (frequency_khz > 0.3); // Consider > 1kHz as high speed
+        useHighspeed = (frequency_khz > QHY_TRACK_HIGH_SPEED_THRESHOLD_KHZ);
     }
     else
     {
@@ -1330,7 +1325,7 @@ void Skywatcher::SetRARate(double rate)
     else
         newstatus.speedmode = LOWSPEED;
     ReadMotorStatus(Axis1);
-    if (RARunning)
+    if (MountCode != QHY_MOUNT_CODE && RARunning)
     {
         if (newstatus.speedmode != RAStatus.speedmode)
             throw EQModError(EQModError::ErrInvalidParameter,
@@ -1360,21 +1355,20 @@ void Skywatcher::SetDERate(double rate)
     // QHY Mount uses direct frequency control instead of complex calculations
     if (MountCode == QHY_MOUNT_CODE) // QHY Mount
     {
-        // For QHY Mount: period directly represents motor frequency in kHz
-        // period = 10 -> 10kHz, period = 1 -> 1kHz, period = 0.1 -> 100Hz, period = 0.01 -> 10Hz
-        // Maximum frequency is 40kHz, minimum is 0.01kHz (10Hz)
+        // QHY protocol value is motor_kHz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ.
+        // Maximum frequency is 40 kHz, minimum is 0.01 kHz (10 Hz).
         // Keep RA/DE conversion consistent for QHY tracking path.
         // Input rate unit is the same as SetRARate(), convert to kHz first.
-        double frequency_khz = absrate / 1000.0;
+        double frequency_khz = absrate / QHY_MOTOR_HZ_PER_KHZ;
         if (frequency_khz > QHY_MAX_FREQUENCY_KHZ)
             frequency_khz = QHY_MAX_FREQUENCY_KHZ; // Firmware limit: max 40kHz
         if (frequency_khz < QHY_MIN_FREQUENCY_KHZ)
             frequency_khz = QHY_MIN_FREQUENCY_KHZ; // Firmware limit: min 10Hz
 
-        period = static_cast<uint32_t>(frequency_khz * 100000.0);
+        period = static_cast<uint32_t>(frequency_khz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ);
 
         // For QHY mount, we don't use high/low speed distinction in the same way
-        useHighspeed = (frequency_khz > 0.3); // Consider > 1kHz as high speed
+        useHighspeed = (frequency_khz > QHY_TRACK_HIGH_SPEED_THRESHOLD_KHZ);
     }
     else
     {
@@ -1399,7 +1393,7 @@ void Skywatcher::SetDERate(double rate)
     else
         newstatus.speedmode = LOWSPEED;
     ReadMotorStatus(Axis2);
-    if (DERunning)
+    if (MountCode != QHY_MOUNT_CODE && DERunning)
     {
         if (newstatus.speedmode != DEStatus.speedmode)
             throw EQModError(EQModError::ErrInvalidParameter,
@@ -1466,9 +1460,9 @@ void Skywatcher::SetSpeed(SkywatcherAxis axis, uint32_t period)
     // Special handling for QHY Mount
     if (MountCode == QHY_MOUNT_CODE) // QHY Mount
     {
-        // For QHY Mount, period represents frequency in Hz
-        // Convert to kHz and clamp to firmware limits
-        double period_khz = period / 100000.0;
+        // For QHY Mount, period is already a QHY frequency code.
+        // Convert to kHz only to clamp and log it.
+        double period_khz = period / QHY_PROTOCOL_SPEED_UNITS_PER_KHZ;
 
         if (period_khz < QHY_MIN_FREQUENCY_KHZ)
             period_khz = QHY_MIN_FREQUENCY_KHZ;
@@ -1477,8 +1471,8 @@ void Skywatcher::SetSpeed(SkywatcherAxis axis, uint32_t period)
 
         // Send frequency directly to firmware (simplified: just use the kHz value)
         // The firmware expects frequency in a specific format
-        // period = static_cast<uint32_t>(period_khz * 100000); // Convert kHz to firmware units
-        double calculated_period = period_khz * 100000;
+        // period = static_cast<uint32_t>(period_khz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ); // Convert kHz to firmware units
+        double calculated_period = period_khz * QHY_PROTOCOL_SPEED_UNITS_PER_KHZ;
         //LOGF_INFO(" calculated_period (raw) = %g", calculated_period);
 
         period = static_cast<uint32_t>(calculated_period);
@@ -1499,10 +1493,10 @@ void Skywatcher::SetSpeed(SkywatcherAxis axis, uint32_t period)
     LOGF_INFO(" period123 = %u", period);
     long2Revu24str(period, cmd);
 
-    if ((axis == Axis1) && (RARunning && (currentstatus->slewmode == GOTO || currentstatus->speedmode == HIGHSPEED)))
+    if ((axis == Axis1) && (MountCode != QHY_MOUNT_CODE) && (RARunning && (currentstatus->slewmode == GOTO || currentstatus->speedmode == HIGHSPEED)))
         throw EQModError(EQModError::ErrInvalidParameter,
                          "Can not change speed while motor is running and in goto or highspeed slew.");
-    if ((axis == Axis2) && (DERunning && (currentstatus->slewmode == GOTO || currentstatus->speedmode == HIGHSPEED)))
+    if ((axis == Axis2) && (MountCode != QHY_MOUNT_CODE) && (DERunning && (currentstatus->slewmode == GOTO || currentstatus->speedmode == HIGHSPEED)))
         throw EQModError(EQModError::ErrInvalidParameter,
                          "Can not change speed while motor is running and in goto or highspeed slew.");
 
